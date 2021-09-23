@@ -7,11 +7,11 @@ module DeviseGoogleAuthenticator::Patches
       #arrr be the patch
       alias_method :create_original, :create
 
-      define_method :create do
+      define_method :create do |*args, &block|
         build_resource(sign_up_params)
 
         if resource.save
-          yield resource if block_given?
+          block.yield resource if block_given?
           if resource.active_for_authentication?
             set_flash_message :notice, :signed_up if is_flashing_format?
             sign_in(resource_name, resource)
